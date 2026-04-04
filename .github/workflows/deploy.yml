@@ -27,7 +27,7 @@ jobs:
             
             # Navigate to where your repository was originally cloned 
             # Make sure this path exists on your EC2 instance!
-            cd /home/ubuntu/pass-generator || { echo "Project directory not found!"; exit 1; }
+            cd /home/ubuntu/Nova-Pass-Generator || { echo "Project directory not found!"; exit 1; }
 
             echo "📥 Pulling latest code changes from GitHub..."
             # Reset hard in case of any uncommitted localized testing files to prevent merge conflicts
