@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HackGear 2.0 - Pass Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+            color: #d1d5db;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            color: #00f5a0;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #9ca3af;
+        }
+        
+        .card {
+            background: #111827;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #d1d5db;
+            font-weight: 500;
+        }
+        
+        .form-group input[type="file"],
+        .form-group input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 6px;
+            color: #ffffff;
+            font-size: 14px;
+        }
+        
+        .form-group input[type="file"]::-webkit-file-upload-button {
+            background: #00f5a0;
+            color: #0a0a0f;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #00f5a0, #00d9f5);
+            color: #0a0a0f;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .progress {
+            display: none;
+            margin: 20px 0;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #1f2937;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00f5a0, #00d9f5);
+            animation: progress 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes progress {
+            0% { width: 0%; }
+            50% { width: 100%; }
+            100% { width: 0%; }
+        }
+        
+        .log-container {
+            display: none;
+            background: #1f2937;
+            border-radius: 8px;
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+        
+        .log-container.show {
+            display: block;
+        }
+        
+        .log-line {
+            margin-bottom: 5px;
+            color: #9ca3af;
+        }
+        
+        .success-message {
+            display: none;
+            background: rgba(0, 245, 160, 0.1);
+            border: 1px solid #00f5a0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .success-message.show {
+            display: block;
+        }
+        
+        .success-message h3 {
+            color: #00f5a0;
+            margin-bottom: 10px;
+        }
+        
+        .download-btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 12px 24px;
+            background: #00d9f5;
+            color: #0a0a0f;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎫 HackGear 2.0</h1>
+            <p>Pass Generator - Create encrypted QR codes and PDF passes</p>
+        </div>
+        
+        <div class="card">
+            <form id="generateForm">
+                <div class="form-group">
+                    <label for="csvFile">📄 CSV File (Team Data)</label>
+                    <input type="file" id="csvFile" name="csv_file" accept=".csv" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="templateFile">📋 Template PDF</label>
+                    <input type="file" id="templateFile" name="template_file" accept=".pdf" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">🔐 Encryption Password</label>
+                    <input type="password" id="password" name="password" value="hackgear2.0" required>
+                </div>
+                
+                <button type="submit" class="btn" id="generateBtn">
+                    🚀 Generate Passes
+                </button>
+            </form>
+            
+            <div class="progress" id="progress">
+                <p style="margin-bottom: 10px; text-align: center;">⏳ Generating passes...</p>
+                <div class="progress-bar">
+                    <div class="progress-bar-fill"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card log-container" id="logContainer">
+            <h3 style="margin-bottom: 15px; color: #00f5a0;">📋 Generation Log</h3>
+            <div id="logs"></div>
+        </div>
+        
+        <div class="success-message" id="successMessage">
+            <h3>🎉 Success!</h3>
+            <p id="successText"></p>
+            <a href="/download" class="download-btn">📥 Download All Passes (ZIP)</a>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('generateForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const generateBtn = document.getElementById('generateBtn');
+            const progress = document.getElementById('progress');
+            const logContainer = document.getElementById('logContainer');
+            const logs = document.getElementById('logs');
+            const successMessage = document.getElementById('successMessage');
+            
+            // Reset UI
+            generateBtn.disabled = true;
+            generateBtn.textContent = '⏳ Generating...';
+            progress.style.display = 'block';
+            logContainer.classList.remove('show');
+            successMessage.classList.remove('show');
+            logs.innerHTML = '';
+            
+            try {
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                // Show logs
+                logContainer.classList.add('show');
+                data.logs.forEach(log => {
+                    const logLine = document.createElement('div');
+                    logLine.className = 'log-line';
+                    logLine.textContent = log;
+                    logs.appendChild(logLine);
+                });
+                
+                // Show success message
+                document.getElementById('successText').textContent = 
+                    `Generated ${data.total} passes successfully!`;
+                successMessage.classList.add('show');
+                
+            } catch (error) {
+                alert('Error: ' + error.message);
+            } finally {
+                generateBtn.disabled = false;
+                generateBtn.textContent = '🚀 Generate Passes';
+                progress.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+# Core FastAPI
+fastapi
+uvicorn[standard]
+python-multipart
+
+# Auth
+python-jose[cryptography]
+passlib[bcrypt]
+
+# Database
+sqlalchemy
+alembic
+
+# Configuration
+python-dotenv
+pydantic
+pydantic-settings
+
+# QR & PDF Generation
+qrcode[pil]
+cryptography
+Pillow
+PyPDF2
+reportlab
+
+# Data Processing
+pandas
+openpyxl
+
+# File handling
+aiofiles
