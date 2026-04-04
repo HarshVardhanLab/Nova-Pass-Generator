@@ -1,0 +1,44 @@
+name: Deploy HackGear to EC2
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  deploy:
+    name: Build & Deploy via SSH
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to EC2 Virtual Machine
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PEM_KEY }}
+          port: 22
+          script: |
+            echo "🔥 Successfully tunneled into EC2 Host..."
+            
+            # Navigate to where your repository was originally cloned 
+            # Make sure this path exists on your EC2 instance!
+            cd /home/ubuntu/pass-generator || { echo "Project directory not found!"; exit 1; }
+
+            echo "📥 Pulling latest code changes from GitHub..."
+            # Reset hard in case of any uncommitted localized testing files to prevent merge conflicts
+            git fetch origin main
+            git reset --hard origin/main
+            
+            echo "⚓ Rebuilding Docker Image Pipeline..."
+            # Bring down the current detached services natively
+            sudo docker compose down
+            
+            # Spin up the newly minted codebase
+            sudo docker compose up --build -d
+            
+            echo "✅ Deployment Automation Executed Successfully!"

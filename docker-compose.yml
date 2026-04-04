@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: hackgear_backend
+    restart: always
+    environment:
+      - DATABASE_URL=sqlite:///./hackgear.db
+      - QR_ENCRYPTION_PASSWORD=${QR_ENCRYPTION_PASSWORD:-hackgear2.0}
+      - SECRET_KEY=${SECRET_KEY:-override-this-in-production}
+    volumes:
+      - backend_db:/app/hackgear.db
+      - backend_static:/app/static
+      - backend_uploads:/app/uploads
+    # Keeping this internal because frontend proxy handles public traffic
+    expose:
+      - "8000"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: hackgear_frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  backend_db:
+  backend_static:
+  backend_uploads:
