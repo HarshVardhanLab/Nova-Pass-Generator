@@ -1,0 +1,73 @@
+INFO:     Will watch for changes in these directories: ['/Volumes/Harsh Techno/Pass Genrator/backend']
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [2616] using WatchFiles
+INFO:     Started server process [2619]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:49704 - "OPTIONS /api/v1/dashboard/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49704 - "GET /api/v1/dashboard/stats HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:49707 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49707 - "GET /api/v1/dashboard/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49707 - "OPTIONS /api/v1/events HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49707 - "GET /api/v1/events HTTP/1.1" 307 Temporary Redirect
+INFO:     127.0.0.1:49708 - "OPTIONS /api/v1/events/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49708 - "GET /api/v1/events/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49707 - "OPTIONS /api/v1/events/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49708 - "OPTIONS /api/v1/dashboard/event-stats/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49708 - "GET /api/v1/dashboard/event-stats/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49707 - "GET /api/v1/events/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49708 - "OPTIONS /api/v1/scanner/attendance/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49707 - "OPTIONS /api/v1/scanner/logs/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49708 - "GET /api/v1/scanner/attendance/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49707 - "GET /api/v1/scanner/logs/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49710 - "GET /api/v1/scanner/attendance/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49711 - "GET /api/v1/scanner/logs/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49713 - "GET /api/v1/scanner/attendance/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49714 - "GET /api/v1/scanner/logs/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49716 - "GET /api/v1/scanner/attendance/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49717 - "GET /api/v1/scanner/logs/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49719 - "GET /api/v1/scanner/attendance/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49720 - "GET /api/v1/scanner/logs/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49719 - "OPTIONS /api/v1/templates HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49720 - "GET /api/v1/templates HTTP/1.1" 307 Temporary Redirect
+INFO:     127.0.0.1:49719 - "OPTIONS /api/v1/templates/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49719 - "GET /api/v1/templates/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49722 - "GET /api/v1/events HTTP/1.1" 307 Temporary Redirect
+INFO:     127.0.0.1:49722 - "GET /api/v1/events/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49722 - "GET /api/v1/dashboard/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49792 - "GET /api/v1/events HTTP/1.1" 307 Temporary Redirect
+INFO:     127.0.0.1:49792 - "GET /api/v1/events/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49793 - "GET /api/v1/dashboard/event-stats/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49792 - "GET /api/v1/events/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49793 - "OPTIONS /api/v1/members?event_id=1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49792 - "GET /api/v1/members?event_id=1 HTTP/1.1" 307 Temporary Redirect
+INFO:     127.0.0.1:49793 - "OPTIONS /api/v1/members/?event_id=1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49793 - "GET /api/v1/members/?event_id=1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50266 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50266 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:50276 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:50282 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:50344 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:50346 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:50346 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:50346 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:50346 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:50348 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:50348 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:50366 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:50489 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:50489 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:50596 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:50596 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:50596 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:50596 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:50596 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:50697 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:50705 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:50714 - "OPTIONS /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50714 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [2619]
+INFO:     Stopping reloader process [2616]
