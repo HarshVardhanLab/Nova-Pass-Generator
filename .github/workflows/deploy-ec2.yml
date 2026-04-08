@@ -1,0 +1,42 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main  # Change to your branch name if different
+    paths:
+      - 'backend/**'
+      - '.github/workflows/deploy-ec2.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /home/ubuntu/Nova-Pass-Generator
+            
+            # Pull latest code
+            git pull origin main
+            
+            # Activate virtual environment and install dependencies
+            cd backend
+            source venv/bin/activate
+            pip install -r requirements.txt
+            
+            # Restart PM2
+            cd ..
+            pm2 restart nova-backend
+            
+            # Show status
+            pm2 status
+            pm2 logs nova-backend --lines 20 --nostream
