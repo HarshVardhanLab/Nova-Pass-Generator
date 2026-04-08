@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# Quick Deploy Script - Run this on your LOCAL machine
-# This will package and upload your app to EC2
+# Quick Deploy Script - Package for EC2 Instance Connect
+# This creates a deployment package you can upload via AWS Console
 
 set -e
 
-echo "📦 Nova Pass Generator - Quick Deploy to EC2"
-echo "============================================="
+echo "📦 Nova Pass Generator - Deployment Package Creator"
+echo "===================================================="
 echo ""
 
 # Colors
@@ -16,26 +16,19 @@ RED='\033[0;31m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
-# Check if required arguments are provided
-if [ "$#" -ne 2 ]; then
-    echo "${RED}Usage: ./quick_deploy.sh <path-to-key.pem> <ec2-public-ip>${NC}"
+# Check if EC2 IP is provided
+if [ "$#" -ne 1 ]; then
+    echo "${RED}Usage: ./quick_deploy.sh <ec2-public-ip>${NC}"
     echo ""
     echo "Example:"
-    echo "  ./quick_deploy.sh ~/Downloads/my-key.pem 54.123.45.67"
+    echo "  ./quick_deploy.sh 54.123.45.67"
+    echo ""
+    echo "This will create a deployment package that you can upload"
+    echo "to your EC2 instance using AWS Instance Connect."
     exit 1
 fi
 
-KEY_FILE=$1
-EC2_IP=$2
-
-# Validate key file
-if [ ! -f "$KEY_FILE" ]; then
-    echo "${RED}Error: Key file not found: $KEY_FILE${NC}"
-    exit 1
-fi
-
-# Ensure key has correct permissions
-chmod 400 "$KEY_FILE"
+EC2_IP=$1
 
 echo "${BLUE}Step 1: Creating deployment package...${NC}"
 
@@ -65,52 +58,57 @@ cd "$TEMP_DIR"
 tar -czf nova-app.tar.gz backend/ frontend/ deploy_ec2.sh
 cd -
 
-echo "${GREEN}✓ Package created${NC}"
+# Move to current directory
+mv "$TEMP_DIR/nova-app.tar.gz" ./nova-app.tar.gz
+
+echo "${GREEN}✓ Package created: nova-app.tar.gz${NC}"
 echo ""
 
-echo "${BLUE}Step 2: Uploading to EC2...${NC}"
-scp -i "$KEY_FILE" "$TEMP_DIR/nova-app.tar.gz" ubuntu@$EC2_IP:~
-echo "${GREEN}✓ Upload complete${NC}"
-echo ""
-
-echo "${BLUE}Step 3: Extracting and deploying on EC2...${NC}"
-ssh -i "$KEY_FILE" ubuntu@$EC2_IP << 'ENDSSH'
-    echo "Extracting files..."
-    mkdir -p nova-pass-generator
-    tar -xzf nova-app.tar.gz -C nova-pass-generator
-    cd nova-pass-generator
-    
-    echo "Making deploy script executable..."
-    chmod +x deploy_ec2.sh
-    
-    echo "Starting deployment..."
-    ./deploy_ec2.sh
-ENDSSH
-
-echo ""
-echo "${GREEN}✓ Deployment complete!${NC}"
-echo ""
-
-# Clean up
+# Clean up temp directory
 rm -rf "$TEMP_DIR"
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "${GREEN}Nova Pass Generator is now live!${NC}"
+echo "${GREEN}Deployment package ready!${NC}"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
-echo "Access your application:"
+echo "${YELLOW}Next Steps:${NC}"
+echo ""
+echo "1. Go to AWS EC2 Console"
+echo "   ${BLUE}https://console.aws.amazon.com/ec2/${NC}"
+echo ""
+echo "2. Select your instance and click 'Connect'"
+echo ""
+echo "3. Choose 'EC2 Instance Connect' and click 'Connect'"
+echo ""
+echo "4. In the browser terminal, run these commands:"
+echo ""
+echo "${BLUE}   # Upload the package (use the Upload button in Instance Connect)${NC}"
+echo "${BLUE}   # Or use this command in your local terminal:${NC}"
+echo "   ${GREEN}aws ec2-instance-connect send-ssh-public-key \\${NC}"
+echo "   ${GREEN}  --instance-id YOUR_INSTANCE_ID \\${NC}"
+echo "   ${GREEN}  --instance-os-user ubuntu \\${NC}"
+echo "   ${GREEN}  --ssh-public-key file://~/.ssh/id_rsa.pub${NC}"
+echo ""
+echo "   ${BLUE}# Then in Instance Connect terminal:${NC}"
+echo "   ${GREEN}# Extract the package${NC}"
+echo "   tar -xzf nova-app.tar.gz"
+echo "   cd nova-pass-generator"
+echo ""
+echo "   ${GREEN}# Make deploy script executable${NC}"
+echo "   chmod +x deploy_ec2.sh"
+echo ""
+echo "   ${GREEN}# Run deployment${NC}"
+echo "   ./deploy_ec2.sh"
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+echo "${YELLOW}Alternative: Use the upload_to_ec2.sh script${NC}"
+echo "If you have AWS CLI configured:"
+echo "  ${GREEN}./upload_to_ec2.sh YOUR_INSTANCE_ID${NC}"
+echo ""
+echo "Package location: ${GREEN}./nova-app.tar.gz${NC}"
+echo "Package size: $(du -h nova-app.tar.gz | cut -f1)"
+echo ""
+echo "After deployment, access your application at:"
 echo "  ${BLUE}http://$EC2_IP${NC}"
-echo ""
-echo "API Documentation:"
-echo "  ${BLUE}http://$EC2_IP/docs${NC}"
-echo ""
-echo "Admin Login:"
-echo "  Username: ${GREEN}admin${NC}"
-echo "  Password: ${GREEN}admin123${NC}"
-echo ""
-echo "SSH to your instance:"
-echo "  ${YELLOW}ssh -i $KEY_FILE ubuntu@$EC2_IP${NC}"
-echo ""
-echo "View logs:"
-echo "  ${YELLOW}ssh -i $KEY_FILE ubuntu@$EC2_IP 'sudo journalctl -u nova-backend -f'${NC}"
 echo ""

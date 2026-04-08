@@ -48,27 +48,60 @@ cd /path/to/your/nova-pass-generator
 # Make script executable
 chmod +x quick_deploy.sh
 
-# Deploy!
-./quick_deploy.sh ~/Downloads/nova-key.pem YOUR_EC2_IP
+# Create deployment package
+./quick_deploy.sh YOUR_EC2_IP
 ```
 
 ### Example:
 ```bash
-./quick_deploy.sh ~/Downloads/nova-key.pem 54.123.45.67
+./quick_deploy.sh 54.123.45.67
+```
+
+This creates a file called `nova-app.tar.gz` (about 5-10 MB).
+
+---
+
+### Upload to EC2
+
+**Option A: Using AWS Console (Easiest)** ⭐
+
+1. Go to AWS Console → EC2 → Instances
+2. Select your instance
+3. Click **"Connect"** button
+4. Choose **"EC2 Instance Connect"**
+5. Click **"Connect"** (opens browser terminal)
+6. In the terminal, click **"Actions"** → **"Upload file"**
+7. Select `nova-app.tar.gz` from your computer
+8. Wait for upload to complete
+
+**Option B: Using AWS CLI** (if configured)
+
+```bash
+chmod +x upload_to_ec2.sh
+./upload_to_ec2.sh YOUR_INSTANCE_ID
+```
+
+---
+
+### Deploy on EC2
+
+In the **EC2 Instance Connect terminal** (browser):
+
+```bash
+# Extract the package
+mkdir -p nova-pass-generator
+tar -xzf nova-app.tar.gz -C nova-pass-generator
+cd nova-pass-generator
+
+# Make deploy script executable
+chmod +x deploy_ec2.sh
+
+# Run deployment (takes 5-10 minutes)
+./deploy_ec2.sh
 ```
 
 ### What You'll See:
 ```
-📦 Nova Pass Generator - Quick Deploy to EC2
-=============================================
-
-Step 1: Creating deployment package...
-✓ Package created
-
-Step 2: Uploading to EC2...
-✓ Upload complete
-
-Step 3: Extracting and deploying on EC2...
 🚀 Starting Nova Pass Generator...
 📦 Installing Python 3.11...
 📦 Installing Node.js 18...
@@ -140,10 +173,13 @@ Features:
 
 ## 🔧 Quick Management
 
-### SSH to Your Server
-```bash
-ssh -i ~/Downloads/nova-key.pem ubuntu@YOUR_EC2_IP
-```
+### Connect to Your Server
+
+**Using EC2 Instance Connect (Browser):**
+1. Go to AWS Console → EC2 → Instances
+2. Select your instance
+3. Click "Connect" → "EC2 Instance Connect"
+4. Click "Connect"
 
 ### Check Status
 ```bash
@@ -186,8 +222,14 @@ After first login:
 ## 🆘 Problems?
 
 ### Application not loading?
+
+**Connect using EC2 Instance Connect:**
+1. AWS Console → EC2 → Instances
+2. Select instance → Click "Connect"
+3. Choose "EC2 Instance Connect" → Click "Connect"
+
+**Then run:**
 ```bash
-ssh -i your-key.pem ubuntu@YOUR_EC2_IP
 cd ~/nova-pass-generator
 ./manage.sh
 # Select option 3 (Restart Backend)
@@ -244,8 +286,8 @@ cd ~/nova-pass-generator
 
 If you have a domain (e.g., nova.yourdomain.com):
 
+**Connect using EC2 Instance Connect, then run:**
 ```bash
-ssh -i your-key.pem ubuntu@YOUR_EC2_IP
 sudo apt-get install -y certbot python3-certbot-nginx
 sudo certbot --nginx -d nova.yourdomain.com
 ```
