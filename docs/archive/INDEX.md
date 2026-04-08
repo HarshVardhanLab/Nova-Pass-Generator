@@ -12,8 +12,14 @@ Complete guide to all documentation files.
    - Super quick 10-minute deployment guide
    - Visual step-by-step instructions
    - Perfect for beginners
+   - Uses EC2 Instance Connect (no SSH keys needed)
 
-2. **[EC2_QUICK_START.md](EC2_QUICK_START.md)** ⭐⭐⭐
+2. **[EC2_INSTANCE_CONNECT_GUIDE.md](EC2_INSTANCE_CONNECT_GUIDE.md)** ⭐⭐
+   - Detailed guide for EC2 Instance Connect
+   - How to upload files via browser
+   - Troubleshooting connection issues
+
+3. **[EC2_QUICK_START.md](EC2_QUICK_START.md)** ⭐⭐⭐
    - Quick start guide with 3 simple steps
    - Common tasks and troubleshooting
    - Cost optimization tips

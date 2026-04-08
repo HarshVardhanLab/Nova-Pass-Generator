@@ -1,5 +1,31 @@
 # 🚀 Deploy to AWS EC2 - RIGHT NOW!
 
+## ⚡ Choose Your Deployment Method
+
+### Method 1: Git Clone (Easiest!) ⭐⭐⭐
+
+If your code is in a Git repository, this is the fastest way!
+
+**See: [DEPLOY_WITH_GIT.md](DEPLOY_WITH_GIT.md)**
+
+**Quick command:**
+```bash
+git clone YOUR_REPO_URL nova-pass-generator
+cd nova-pass-generator
+PUBLIC_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)
+echo "VITE_API_URL=http://$PUBLIC_IP" > frontend/.env
+chmod +x deploy_ec2.sh
+./deploy_ec2.sh
+```
+
+---
+
+### Method 2: Upload Package
+
+If you don't use Git, follow the steps below.
+
+---
+
 ## ⚡ Super Quick Guide (10 Minutes)
 
 ---
