@@ -50,6 +50,12 @@ Copy the entire content including:
 -----END RSA PRIVATE KEY-----
 ```
 
+**IMPORTANT:** 
+- Copy the ENTIRE key including the BEGIN and END lines
+- Make sure there are NO extra spaces or newlines at the beginning or end
+- The key should start with `-----BEGIN` and end with `-----END`
+- If your key starts with `-----BEGIN OPENSSH PRIVATE KEY-----`, that's fine too
+
 ### Step 3: Add GitHub Secrets
 
 Go to your GitHub repository:

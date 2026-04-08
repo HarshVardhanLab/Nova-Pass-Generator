@@ -1,248 +1,355 @@
-# 🎫 HackGear Pass Generator - Full Stack Application
+# 🎫 Nova Pass Generator
 
-A comprehensive event management platform for generating encrypted QR codes, PDF passes, and managing attendees.
+A complete event pass management system with QR code generation, PDF pass creation, and attendance tracking.
 
-## 🚀 Features
+## ✨ Features
 
-### Phase 1 (Current Implementation)
-- ✅ **Dashboard** - Overview stats and recent activity
-- ✅ **CSV Management** - Upload CSV or edit data inline (Excel-like)
-- ✅ **Pass Generation** - Generate encrypted QR codes and PDF passes
-- ✅ **Team Management** - Manage teams and members
-- ✅ **Template System** - Custom pass templates
-- ✅ **QR Scanner** - Real-time attendance tracking
-- ✅ **Analytics** - Event statistics and reports
+- 🎟️ Event Management
+- 👥 Team & Member Management
+- 📊 CSV Upload/Export
+- 🎨 Drag-and-Drop Template Editor (Canva-like)
+- 🔐 Encrypted QR Code Generation
+- 📄 PDF Pass Generation
+- 📱 QR Scanner with Attendance Tracking
+- 📈 Analytics Dashboard
+- 🎯 Custom Text Fields with Placeholders
 
-### Excluded (Already in NovaMailer)
-- ❌ Email System (use NovaMailer integration)
+## 🚀 Quick Start
 
-## 🏗️ Tech Stack
-
-### Backend
-- **FastAPI** - Modern Python web framework
-- **SQLAlchemy** - ORM for database operations
-- **PostgreSQL/SQLite** - Database
-- **Pydantic** - Data validation
-- **QRCode** - QR code generation
-- **ReportLab** - PDF generation
-- **Cryptography** - QR encryption
-
-### Frontend
-- **React 18** - UI library
-- **TypeScript** - Type safety
-- **Vite** - Build tool
-- **TailwindCSS** - Styling
-- **AG-Grid** - Excel-like data grid
-- **React Query** - Data fetching
-- **Zustand** - State management
-- **Recharts** - Analytics charts
-
-## 📦 Installation
-
-### Prerequisites
-- Python 3.11+
-- Node.js 18+
-- PostgreSQL (optional, SQLite works too)
-
-### Backend Setup
+### Local Development
 
 ```bash
+# Clone repository
+git clone YOUR_REPO_URL Nova-Pass-Generator
+cd Nova-Pass-Generator
+
+# Start backend
 cd backend
-
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
+python3.11 -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt
+uvicorn app.main:app --reload
 
-# Create .env file
-cp .env.example .env
-# Edit .env with your configuration
-
-# Run migrations (creates tables)
-python -m app.main
-
-# Start server
-uvicorn app.main:app --reload --port 8000
-```
-
-Backend will run on: http://localhost:8000
-API docs: http://localhost:8000/docs
-
-### Frontend Setup
-
-```bash
+# In another terminal, start frontend
 cd frontend
-
-# Install dependencies
 npm install
-
-# Start development server
 npm run dev
 ```
 
-Frontend will run on: http://localhost:5173
+**Access:** http://localhost:5173
+
+**Login:**
+- Username: `harshvardhan`
+- Password: `harsh9837`
+
+---
+
+## 🌐 Production Deployment
+
+### Current Setup
+- **Frontend**: Vercel → https://nova-pass-generator.vercel.app
+- **Backend**: AWS EC2 → http://100.55.91.90:8000
+- **Process Manager**: PM2
+
+### 🚨 Backend Not Working? Quick Fix
+
+If backend on EC2 shows pydantic validation errors:
+
+```bash
+# On EC2 instance
+cd ~/Nova-Pass-Generator
+git pull
+chmod +x fix_backend_ec2.sh
+./fix_backend_ec2.sh
+```
+
+**See:** `QUICK_FIX.md` for detailed troubleshooting
+
+### Deploy Backend to EC2
+
+```bash
+# On EC2 instance
+git clone YOUR_REPO_URL Nova-Pass-Generator
+cd Nova-Pass-Generator
+chmod +x deploy_backend_pm2.sh
+./deploy_backend_pm2.sh
+```
+
+**See:** `PM2_GUIDE.md` for PM2 management commands
+
+### Setup Vercel Frontend
+
+1. Deploy to Vercel (import from GitHub)
+2. Set Root Directory: `frontend`
+3. Add Environment Variable:
+   - Name: `VITE_API_URL`
+   - Value: `http://100.55.91.90:8000`
+4. Deploy
+
+**See:** `VERCEL_SETUP.md` for detailed configuration
+
+---
+
+## 📚 Documentation
+
+### Essential Guides (Start Here)
+- **`QUICK_FIX.md`** - Fix backend errors on EC2 ⚡
+- **`VERCEL_SETUP.md`** - Configure Vercel frontend 🌐
+- **`PM2_GUIDE.md`** - Manage backend with PM2 🔄
+- **`VERCEL_EC2_DEPLOYMENT.md`** - Complete deployment guide 📖
+
+### Additional Resources
+- `CLOUDFLARE_TUNNEL.md` - Setup HTTPS tunnel (free SSL)
+- `NGROK_SETUP.md` - Alternative tunnel setup
+- `docs/archive/` - Archived documentation
+
+---
+
+## 🔧 Common Commands
+
+### PM2 (on EC2)
+```bash
+pm2 status              # Check backend status
+pm2 logs nova-backend   # View logs
+pm2 restart nova-backend # Restart backend
+pm2 stop nova-backend   # Stop backend
+pm2 start nova-backend  # Start backend
+```
+
+### Local Development
+```bash
+# Backend
+cd backend
+source venv/bin/activate
+uvicorn app.main:app --reload
+
+# Frontend
+cd frontend
+npm run dev
+```
+
+### Test API
+```bash
+# Health check
+curl http://100.55.91.90:8000/api/v1/health
+
+# Should return: {"status":"ok"}
+```
+
+---
+
+## 📋 Tech Stack
+
+### Frontend
+- React 18 + TypeScript
+- Vite
+- TailwindCSS
+- React Router
+- TanStack Query
+
+### Backend
+- FastAPI
+- Python 3.11
+- SQLAlchemy + SQLite
+- Pydantic
+- JWT Authentication
+- Fernet Encryption
+
+---
 
 ## 📁 Project Structure
 
 ```
-hackgear-platform/
-├── backend/
+Nova-Pass-Generator/
+├── backend/              # FastAPI backend
 │   ├── app/
-│   │   ├── api/
-│   │   │   └── routes/
-│   │   │       ├── auth.py
-│   │   │       ├── csv_handler.py
-│   │   │       ├── dashboard.py
-│   │   │       ├── events.py
-│   │   │       ├── members.py
-│   │   │       ├── passes.py
-│   │   │       ├── scanner.py
-│   │   │       ├── teams.py
-│   │   │       └── templates.py
-│   │   ├── core/
-│   │   │   ├── config.py
-│   │   │   └── database.py
-│   │   ├── models/
-│   │   │   └── models.py
-│   │   ├── schemas/
-│   │   │   └── schemas.py
-│   │   ├── services/
-│   │   │   ├── qr_service.py
-│   │   │   └── pdf_service.py
-│   │   └── main.py
-│   ├── requirements.txt
-│   └── .env.example
-│
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── Layout.tsx
-│   │   │   ├── CSVEditor.tsx
-│   │   │   ├── PassPreview.tsx
-│   │   │   └── Scanner.tsx
-│   │   ├── pages/
-│   │   │   ├── Dashboard.tsx
-│   │   │   ├── Events.tsx
-│   │   │   ├── EventDetail.tsx
-│   │   │   ├── CSVManager.tsx
-│   │   │   ├── PassGenerator.tsx
-│   │   │   ├── Scanner.tsx
-│   │   │   ├── Templates.tsx
-│   │   │   └── Analytics.tsx
-│   │   ├── services/
-│   │   │   └── api.ts
-│   │   ├── store/
-│   │   │   └── useStore.ts
-│   │   ├── App.tsx
-│   │   └── main.tsx
-│   ├── package.json
-│   └── tailwind.config.js
-│
-└── README.md
+│   │   ├── api/         # API routes (9 modules)
+│   │   ├── core/        # Config, database, security
+│   │   ├── models/      # SQLAlchemy models
+│   │   ├── schemas/     # Pydantic schemas
+│   │   └── services/    # PDF & QR services
+│   ├── static/          # Generated passes & QR codes
+│   └── uploads/         # Template uploads
+├── frontend/            # React frontend
+│   └── src/
+│       ├── components/  # Reusable components
+│       ├── pages/       # Page components (9 pages)
+│       └── services/    # API client
+├── docs/               # Documentation
+├── fix_backend_ec2.sh  # Fix script for EC2
+├── deploy_backend_pm2.sh # PM2 deployment
+└── ecosystem.config.js # PM2 configuration
 ```
 
-## 🔑 Key API Endpoints
+---
 
-### Events
-- `GET /api/v1/events` - List all events
-- `POST /api/v1/events` - Create event
-- `GET /api/v1/events/{id}` - Get event details
+## 🎯 URLs
 
-### CSV Management
-- `POST /api/v1/csv/upload/{event_id}` - Upload CSV
-- `GET /api/v1/csv/export/{event_id}` - Export CSV
+- **Frontend**: https://nova-pass-generator.vercel.app
+- **Backend**: http://100.55.91.90:8000
+- **API Docs**: http://100.55.91.90:8000/docs
+- **Health Check**: http://100.55.91.90:8000/api/v1/health
 
-### Members
-- `GET /api/v1/members` - List members
-- `POST /api/v1/members` - Create member
-- `PUT /api/v1/members/{id}` - Update member
-- `DELETE /api/v1/members/{id}` - Delete member
+---
+
+## 📱 Features in Detail
+
+### Template Editor (Canva-like)
+- Drag-and-drop QR code positioning
+- Multiple text elements with full control
+- Typography: font family, size (8-48px), weight, color, alignment
+- Adjustable width/height for text boxes
+- Data field binding: name, team_name, team_id, status, email
+- Custom text with placeholders: `{Name}`, `{Team Name}`, `{Team ID}`, `{Status}`, `{Email}`
+- Real-time preview on PDF template
 
 ### Pass Generation
-- `POST /api/v1/passes/generate` - Generate passes
-- `GET /api/v1/passes/download/{member_id}` - Download pass
+- Bulk generation from CSV
+- Individual pass download
+- ZIP download for all passes
+- Encrypted QR codes with Fernet
+- Custom positioning and styling
 
-### Scanner
-- `POST /api/v1/scanner/scan` - Scan QR code
-- `GET /api/v1/scanner/attendance/{event_id}` - Get attendance
+### QR Scanner
+- Real-time scanning with camera
+- Attendance tracking
+- Check-in/check-out logging
+- Member information display
+- Analytics integration
 
-### Dashboard
-- `GET /api/v1/dashboard/stats` - Get dashboard statistics
+### CSV Management
+- Upload CSV with team data
+- Format: Team Id, Team Name, Name, Status, Email
+- Bulk import teams and members
+- Export functionality
 
-## 🎨 Frontend Features
+---
 
-### CSV Manager
-- Upload CSV files
-- Inline editing (Excel-like with AG-Grid)
-- Add/Edit/Delete rows
-- Bulk operations
-- Data validation
-- Export to CSV
+## 🔒 Security
 
-### Pass Generator
-- Batch generation
-- Real-time progress
-- Preview before generating
-- Custom templates
-- Download individual or bulk passes
-
-### Scanner
-- Web-based QR scanner
-- Real-time check-in
-- Duplicate prevention
-- Attendance logs
-
-### Analytics
-- Event statistics
-- Team-wise reports
-- Attendance trends
-- Visual charts
-
-## 🔐 Security
-
-- JWT authentication
+- JWT authentication with token expiry
+- Encrypted QR codes (Fernet encryption)
 - Password hashing (bcrypt)
-- QR code encryption (Fernet)
 - CORS protection
-- SQL injection prevention (SQLAlchemy ORM)
+- Input validation with Pydantic
+- SQL injection protection (SQLAlchemy ORM)
 
-## 🚀 Deployment
+---
 
-### Backend (Railway/Render/Heroku)
+## 🔧 Configuration
+
+### Frontend Environment (`frontend/.env`)
 ```bash
-# Set environment variables
-DATABASE_URL=postgresql://...
-SECRET_KEY=your-secret-key
-
-# Deploy
-git push heroku main
+VITE_API_URL=http://localhost:8000  # Local
+# or
+VITE_API_URL=http://100.55.91.90:8000  # Production EC2
 ```
 
-### Frontend (Vercel/Netlify)
+### Backend Environment (`backend/.env`)
 ```bash
-# Build
-npm run build
+# Database
+DATABASE_URL=sqlite:///./hackgear.db
 
-# Deploy
-vercel deploy
+# Security
+SECRET_KEY=your-super-secret-key-change-this
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+
+# QR Encryption
+QR_ENCRYPTION_PASSWORD=nova2024
+
+# CORS
+CORS_ORIGINS=["https://nova-pass-generator.vercel.app","http://localhost:5173"]
+
+# File Upload
+MAX_UPLOAD_SIZE=10485760
+UPLOAD_DIR=./uploads
+STATIC_DIR=./static
+
+# Admin User
+ADMIN_USERNAME=harshvardhan
+ADMIN_PASSWORD=harsh9837
+ADMIN_EMAIL=admin@nova.local
 ```
 
-## 📝 Environment Variables
+---
 
-### Backend (.env)
-```
-DATABASE_URL=postgresql://user:password@localhost:5432/hackgear_db
-SECRET_KEY=your-secret-key-here
-QR_ENCRYPTION_PASSWORD=hackgear2.0
-ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173
+## 🐛 Troubleshooting
+
+### Backend Won't Start on EC2
+
+**Error:** Pydantic validation errors
+
+**Fix:**
+```bash
+cd ~/Nova-Pass-Generator
+git pull
+chmod +x fix_backend_ec2.sh
+./fix_backend_ec2.sh
 ```
 
-### Frontend (.env)
+### CORS Errors in Browser
+
+**Error:** "Access blocked by CORS policy"
+
+**Fix:**
+```bash
+# On EC2
+cd ~/Nova-Pass-Generator/backend
+nano .env
+# Update: CORS_ORIGINS=["https://nova-pass-generator.vercel.app"]
+pm2 restart nova-backend
 ```
-VITE_API_URL=http://localhost:8000
+
+### Frontend Shows "Network Error"
+
+**Check:**
+1. Backend is running: `pm2 status` on EC2
+2. Port 8000 is open in EC2 Security Group
+3. `VITE_API_URL` is set in Vercel
+
+**Fix Security Group:**
+- EC2 Console → Security Groups
+- Add Inbound Rule: Custom TCP, Port 8000, Source: 0.0.0.0/0
+
+### Port 8000 Already in Use
+
+```bash
+# Find process
+sudo lsof -i :8000
+
+# Kill it
+sudo kill -9 PID
+
+# Restart PM2
+pm2 restart nova-backend
 ```
+
+---
+
+## 📊 Database Schema
+
+- **users** - Admin authentication
+- **events** - Event management
+- **teams** - Team information
+- **members** - Team members with QR data
+- **templates** - PDF templates with element positioning
+- **attendance_logs** - Check-in/check-out records
+
+---
+
+## ✅ Success Checklist
+
+- [ ] Backend running on EC2 (`pm2 status` shows "online")
+- [ ] API health check returns `{"status":"ok"}`
+- [ ] Port 8000 open in EC2 Security Group
+- [ ] `VITE_API_URL` set in Vercel environment variables
+- [ ] Frontend deployed and accessible on Vercel
+- [ ] Can login to frontend
+- [ ] No CORS errors in browser console
+- [ ] Can generate passes and scan QR codes
+
+---
 
 ## 🤝 Contributing
 
@@ -252,25 +359,23 @@ VITE_API_URL=http://localhost:8000
 4. Push to branch (`git push origin feature/amazing-feature`)
 5. Open Pull Request
 
+---
+
 ## 📄 License
 
-MIT License
-
-## 👥 Team
-
-Built for HackGear 2.0 by Nova Coders
-
-## 🔮 Future Features (Phase 2)
-
-- WhatsApp integration
-- SMS notifications
-- Certificate generation
-- Payment integration
-- Mobile app (React Native)
-- Advanced analytics
-- Multi-language support
-- API webhooks
+MIT License - feel free to use for your projects!
 
 ---
 
-For questions or support, contact: novacoders007@gmail.com
+## 🆘 Need Help?
+
+1. Check `QUICK_FIX.md` for common issues
+2. Review `PM2_GUIDE.md` for backend management
+3. See `VERCEL_SETUP.md` for frontend configuration
+4. Read `VERCEL_EC2_DEPLOYMENT.md` for complete deployment guide
+
+---
+
+**Built with ❤️ for seamless event management**
+
+**Happy Event Managing! 🎉**

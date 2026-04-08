@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
 from enum import Enum
@@ -15,7 +15,7 @@ class MemberStatus(str, Enum):
 
 # User Schemas
 class UserBase(BaseModel):
-    email: EmailStr
+    email: str
     username: str
     full_name: Optional[str] = None
     role: UserRole = UserRole.ORGANIZER
@@ -77,7 +77,7 @@ class TeamResponse(TeamBase):
 # Member Schemas
 class MemberBase(BaseModel):
     name: str
-    email: EmailStr
+    email: str
     status: MemberStatus = MemberStatus.MEMBER
 
 class MemberCreate(MemberBase):
@@ -85,7 +85,7 @@ class MemberCreate(MemberBase):
 
 class MemberUpdate(BaseModel):
     name: Optional[str] = None
-    email: Optional[EmailStr] = None
+    email: Optional[str] = None
     status: Optional[MemberStatus] = None
 
 class MemberResponse(MemberBase):
