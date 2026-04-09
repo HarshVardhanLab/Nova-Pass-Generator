@@ -1,0 +1,51 @@
+name: Deploy to EC2 with PM2
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'backend/**'
+      - '.github/workflows/deploy-pm2.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            set -e
+            echo "🔥 Connected to EC2..."
+            
+            cd /home/ubuntu/Nova-Pass-Generator
+            
+            echo "📥 Pulling latest code..."
+            git fetch origin main
+            git reset --hard origin/main
+            
+            echo "🔧 Installing backend dependencies..."
+            cd backend
+            source venv/bin/activate
+            pip install -r requirements.txt
+            
+            echo "🔄 Restarting PM2..."
+            cd ..
+            pm2 restart nova-backend || pm2 start ecosystem.config.js
+            
+            echo "📊 PM2 Status:"
+            pm2 status
+            
+            echo "📜 Backend logs (last 20 lines):"
+            pm2 logs nova-backend --lines 20 --nostream
+            
+            echo "✅ Deployment complete!"
