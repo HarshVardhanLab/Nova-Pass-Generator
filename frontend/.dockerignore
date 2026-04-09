@@ -1,0 +1,24 @@
+# Dependencies (installed during build)
+node_modules/
+npm-debug.log*
+
+# Build output (generated during build)
+dist/
+build/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Testing
+coverage/
+*.test.*
