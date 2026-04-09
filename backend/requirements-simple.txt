@@ -14,7 +14,9 @@ alembic
 # Configuration
 python-dotenv
 pydantic
+pydantic[email]
 pydantic-settings
+email-validator>=2.0.0
 
 # QR & PDF Generation
 qrcode[pil]
