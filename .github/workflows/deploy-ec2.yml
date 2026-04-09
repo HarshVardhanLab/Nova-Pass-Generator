@@ -1,22 +1,24 @@
-name: Deploy to EC2
+name: Deploy to EC2 (Docker)
 
 on:
   push:
     branches:
-      - main  # Change to your branch name if different
+      - main
     paths:
       - 'backend/**'
+      - 'frontend/**'
+      - 'docker-compose.yml'
       - '.github/workflows/deploy-ec2.yml'
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Deploy to EC2
+      - name: Deploy to EC2 via Docker Compose
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -24,20 +26,32 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
           script: |
+            set -e
+            echo "🔥 Connected to EC2..."
+
             cd /home/ubuntu/Nova-Pass-Generator
-            
-            # Pull latest code
-            git pull origin main
-            
-            # Activate virtual environment and install dependencies
-            cd backend
-            source venv/bin/activate
-            pip install -r requirements.txt
-            
-            # Restart PM2
-            cd ..
-            pm2 restart nova-backend
-            
-            # Show status
-            pm2 status
-            pm2 logs nova-backend --lines 20 --nostream
+
+            echo "📥 Pulling latest code..."
+            git fetch origin main
+            git reset --hard origin/main
+
+            echo "🔑 Writing environment secrets..."
+            cat > .env <<EOF
+            SECRET_KEY=${{ secrets.SECRET_KEY }}
+            QR_ENCRYPTION_PASSWORD=${{ secrets.QR_ENCRYPTION_PASSWORD }}
+            EOF
+
+            echo "⚓ Rebuilding and restarting Docker containers..."
+            sudo docker compose down --remove-orphans
+            sudo docker compose up --build -d
+
+            echo "🧹 Cleaning up unused Docker images..."
+            sudo docker image prune -f
+
+            echo "📋 Container status:"
+            sudo docker compose ps
+
+            echo "📜 Backend logs (last 30 lines):"
+            sudo docker compose logs backend --tail=30
+
+            echo "✅ Deployment complete!"
