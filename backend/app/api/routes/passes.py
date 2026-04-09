@@ -105,9 +105,9 @@ async def generate_passes(
                 template.text_elements
             )
             
-            # Update member
-            member.qr_code_path = f"/static/qr_codes/{qr_filename}"
-            member.pass_path = f"/static/passes/{pass_filename}"
+            # Update member with relative paths (without /static/ prefix for CSV compatibility)
+            member.qr_code_path = f"qr_codes/{qr_filename}"
+            member.pass_path = f"passes/{pass_filename}"
             
             total_generated += 1
             
@@ -129,7 +129,12 @@ async def download_pass(member_id: int, db: Session = Depends(get_db)):
     if not member or not member.pass_path:
         raise HTTPException(status_code=404, detail="Pass not found")
     
-    file_path = member.pass_path.replace("/static/", settings.STATIC_DIR + "/")
+    # Handle both old format (/static/passes/...) and new format (passes/...)
+    if member.pass_path.startswith("/static/"):
+        file_path = member.pass_path.replace("/static/", settings.STATIC_DIR + "/")
+    else:
+        file_path = os.path.join(settings.STATIC_DIR, member.pass_path)
+    
     if not os.path.exists(file_path):
         raise HTTPException(status_code=404, detail="Pass file not found")
     
@@ -146,7 +151,12 @@ async def preview_pass(member_id: int, db: Session = Depends(get_db)):
     if not member or not member.pass_path:
         raise HTTPException(status_code=404, detail="Pass not found")
     
-    file_path = member.pass_path.replace("/static/", settings.STATIC_DIR + "/")
+    # Handle both old format (/static/passes/...) and new format (passes/...)
+    if member.pass_path.startswith("/static/"):
+        file_path = member.pass_path.replace("/static/", settings.STATIC_DIR + "/")
+    else:
+        file_path = os.path.join(settings.STATIC_DIR, member.pass_path)
+    
     if not os.path.exists(file_path):
         raise HTTPException(status_code=404, detail="Pass file not found")
     
@@ -173,8 +183,11 @@ async def download_all_passes(event_id: int, db: Session = Depends(get_db)):
     try:
         with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
             for member in members:
-                # Get the actual file path
-                file_path = member.pass_path.replace("/static/", settings.STATIC_DIR + "/")
+                # Handle both old format (/static/passes/...) and new format (passes/...)
+                if member.pass_path.startswith("/static/"):
+                    file_path = member.pass_path.replace("/static/", settings.STATIC_DIR + "/")
+                else:
+                    file_path = os.path.join(settings.STATIC_DIR, member.pass_path)
                 
                 if os.path.exists(file_path):
                     # Add file to zip with a clean name
